@@ -25,7 +25,7 @@ gem "rack-attack"
 
 # Background jobs
 gem "sidekiq", "~> 7.2"
-gem "sidekiq-cron", "~> 1.12"
+gem "sidekiq-cron", "~> 2.3"
 
 # HTTP client for scraping
 gem "httparty", "~> 0.24.0"
