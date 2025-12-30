@@ -319,7 +319,7 @@ GEM
       globalid (>= 1.0.1)
       sidekiq (>= 6)
     stringio (3.2.0)
-    stripe (13.5.1)
+    stripe (18.1.0)
     thor (1.4.0)
     timeout (0.6.0)
     tsort (0.2.0)
@@ -371,7 +371,7 @@ DEPENDENCIES
   sentry-ruby
   sidekiq (~> 7.2)
   sidekiq-cron (~> 1.12)
-  stripe (~> 13.3)
+  stripe (~> 18.1)
   tzinfo-data
   webmock
 
