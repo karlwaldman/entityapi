@@ -24,7 +24,7 @@ gem "rack-cors"
 gem "rack-attack"
 
 # Background jobs
-gem "sidekiq", "~> 7.2"
+gem "sidekiq", "~> 8.1"
 gem "sidekiq-cron", "~> 1.12"
 
 # HTTP client for scraping
