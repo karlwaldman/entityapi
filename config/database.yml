@@ -1,0 +1,25 @@
+# PostgreSQL configuration for EntityAPI
+#
+# Development/Test: Uses local PostgreSQL (ignores global PGHOST etc)
+# Production: Uses DATABASE_URL from environment
+
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: entityapi_development
+  host: localhost
+  port: 5432
+
+test:
+  <<: *default
+  database: entityapi_test
+  host: localhost
+  port: 5432
+
+production:
+  <<: *default
+  url: <%= ENV["DATABASE_URL"] %>
