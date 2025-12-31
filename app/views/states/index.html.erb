@@ -1,0 +1,57 @@
+<% content_for :title, "Business Entity Search by State | EntityAPI" %>
+<% content_for :description, "Search #{number_with_delimiter(@total_entities)} business entities across all 50 US states. Free business lookup with data from SAM.gov, FMCSA, and state registries." %>
+
+<% content_for :schema_org do %>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "EntityAPI",
+  "url": "<%= request.base_url %>",
+  "description": "Business entity search and verification platform",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "<%= request.base_url %>/{state}/business-search?q={search_term}",
+    "query-input": "required name=search_term"
+  }
+}
+</script>
+<% end %>
+
+<div class="hero">
+  <h1>US Business Entity Search</h1>
+  <p>Search and verify <%= number_with_delimiter(@total_entities) %> business entities across the United States. Data sourced from SAM.gov, FMCSA, and state registries.</p>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value"><%= number_with_delimiter(@total_entities) %></div>
+      <div class="stat-label">Total Entities</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value"><%= @states.count %></div>
+      <div class="stat-label">States Covered</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">2</div>
+      <div class="stat-label">Data Sources</div>
+    </div>
+  </div>
+</div>
+
+<h2>Search by State</h2>
+<div class="grid">
+  <% @states.each do |state| %>
+    <a href="/<%= state[:slug] %>/business-search" class="card">
+      <h3><%= state[:name] %></h3>
+      <div class="count"><%= number_with_delimiter(state[:count]) %></div>
+      <p>Business entities</p>
+    </a>
+  <% end %>
+</div>
+
+<h2>About EntityAPI</h2>
+<p style="max-width: 800px; margin-top: 16px; color: var(--gray-600);">
+  EntityAPI aggregates business entity data from multiple authoritative sources including the federal SAM.gov database
+  (System for Award Management) and FMCSA motor carrier registry. Search for LLCs, corporations, partnerships,
+  and other business entities by name, state, or identifier.
+</p>

@@ -1,0 +1,107 @@
+<% content_for :title, "#{@state_name} Business Search - #{number_with_delimiter(@entity_count)} Entities | EntityAPI" %>
+<% content_for :description, "Search #{number_with_delimiter(@entity_count)} #{@state_name} business entities. Free #{@state_name} business lookup with verified data from SAM.gov and FMCSA." %>
+
+<% content_for :schema_org do %>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "<%= @state_name %> Business Entity Search",
+  "description": "Search <%= number_with_delimiter(@entity_count) %> business entities in <%= @state_name %>",
+  "url": "<%= request.original_url %>",
+  "mainEntity": {
+    "@type": "Dataset",
+    "name": "<%= @state_name %> Business Entities",
+    "description": "Business entity records from <%= @state_name %>",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "creator": {
+      "@type": "Organization",
+      "name": "EntityAPI"
+    }
+  }
+}
+</script>
+<% end %>
+
+<div class="breadcrumb">
+  <a href="/">Home</a> &rarr; <%= @state_name %>
+</div>
+
+<h1><%= @state_name %> Business Search</h1>
+<p style="color: var(--gray-600); margin-bottom: 32px;">
+  Search <%= number_with_delimiter(@entity_count) %> registered business entities in <%= @state_name %>.
+</p>
+
+<form action="/<%= @state_slug %>/business-search" method="get" class="search-box">
+  <input type="text" name="q" placeholder="Search <%= @state_name %> businesses..." value="<%= @query %>">
+  <button type="submit">Search</button>
+</form>
+
+<div class="stats" style="justify-content: flex-start; margin: 32px 0;">
+  <div class="stat">
+    <div class="stat-value"><%= number_with_delimiter(@entity_count) %></div>
+    <div class="stat-label">Total Entities</div>
+  </div>
+  <% @by_source.each do |source, count| %>
+    <div class="stat">
+      <div class="stat-value"><%= number_with_delimiter(count) %></div>
+      <div class="stat-label"><%= source.titleize %></div>
+    </div>
+  <% end %>
+</div>
+
+<% if @top_cities.present? %>
+  <h2>Top Cities in <%= @state_name %></h2>
+  <div class="cities-list">
+    <% @top_cities.each do |city, count| %>
+      <span class="city-tag"><%= city %> (<%= number_with_delimiter(count) %>)</span>
+    <% end %>
+  </div>
+<% end %>
+
+<h2><%= @query.present? ? "Search Results" : "Sample Entities" %></h2>
+<% if @query.present? %>
+  <p style="color: var(--gray-600); margin-bottom: 16px;">
+    Found <%= number_with_delimiter(@result_count) %> results for "<%= @query %>"
+  </p>
+<% end %>
+
+<div class="entity-list">
+  <% @entities.each do |entity| %>
+    <div class="entity-item">
+      <div>
+        <div class="entity-name"><%= entity.canonical_name %></div>
+        <div class="entity-meta">
+          <% if entity.principal_address["city"].present? %>
+            <%= entity.principal_address["city"] %>, <%= @state_abbrev %>
+          <% end %>
+          <% if entity.entity_type.present? %>
+            &bull; <%= entity.entity_type.gsub("_", " ") %>
+          <% end %>
+          &bull; <%= entity.source.titleize %>
+        </div>
+      </div>
+      <div>
+        <% if entity.status == "Active" %>
+          <span class="badge active">Active</span>
+        <% elsif entity.status.present? %>
+          <span class="badge"><%= entity.status %></span>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<% if @entities.count >= 50 %>
+  <p style="text-align: center; margin-top: 24px; color: var(--gray-600);">
+    Showing first 50 results. Use search to find specific entities.
+  </p>
+<% end %>
+
+<h2>About <%= @state_name %> Business Entities</h2>
+<p style="max-width: 800px; margin-top: 16px; color: var(--gray-600);">
+  EntityAPI provides access to <%= number_with_delimiter(@entity_count) %> business entities registered in <%= @state_name %>.
+  Data is sourced from the federal SAM.gov database (System for Award Management) for federal contractors and
+  the FMCSA motor carrier registry for transportation companies. Each entity record includes the business name,
+  address, status, and unique identifiers like SAM UEI, CAGE code, or DOT number.
+</p>

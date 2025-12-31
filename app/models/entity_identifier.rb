@@ -4,7 +4,7 @@ class EntityIdentifier < ApplicationRecord
   belongs_to :entity
 
   # Identifier types
-  TYPES = %w[ein lei duns state_id sec_cik sam_uei].freeze
+  TYPES = %w[ein lei duns state_id sec_cik sam_uei cage dot_number mc_number].freeze
 
   validates :identifier_type, presence: true, inclusion: { in: TYPES }
   validates :identifier_value, presence: true

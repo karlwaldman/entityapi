@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= content_for?(:title) ? yield(:title) : "EntityAPI - Business Entity Search" %></title>
+  <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Search and verify business entities across all 50 US states. Access data from SAM.gov, FMCSA, and state registries." %>">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="<%= content_for?(:title) ? yield(:title) : "EntityAPI" %>">
+  <meta property="og:description" content="<%= content_for?(:description) ? yield(:description) : "Business entity search and verification" %>">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<%= request.original_url %>">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="<%= request.original_url.split('?').first %>">
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-600: #4b5563;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--gray-800);
+      background: var(--gray-50);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header {
+      background: white;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 16px 0;
+    }
+
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    nav a {
+      margin-left: 24px;
+      color: var(--gray-600);
+      text-decoration: none;
+    }
+
+    nav a:hover { color: var(--primary); }
+
+    main { padding: 40px 0; }
+
+    h1 {
+      font-size: 2.5rem;
+      color: var(--gray-900);
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: var(--gray-800);
+      margin: 32px 0 16px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 60px 0;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--gray-600);
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+
+    .search-box {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      gap: 12px;
+    }
+
+    .search-box input {
+      flex: 1;
+      padding: 16px 20px;
+      font-size: 16px;
+      border: 2px solid var(--gray-200);
+      border-radius: 8px;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .search-box button {
+      padding: 16px 32px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .search-box button:hover { background: var(--primary-dark); }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      margin-top: 48px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      color: var(--gray-600);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      transition: box-shadow 0.2s;
+    }
+
+    .card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 8px;
+    }
+
+    .card .count {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .entity-list {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .entity-item {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .entity-item:last-child { border-bottom: none; }
+
+    .entity-name {
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+
+    .entity-meta {
+      color: var(--gray-600);
+      font-size: 14px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--gray-100);
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--gray-600);
+    }
+
+    .badge.active {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .cities-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .city-tag {
+      padding: 8px 16px;
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 20px;
+      font-size: 14px;
+      text-decoration: none;
+      color: var(--gray-600);
+    }
+
+    .city-tag:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    footer {
+      background: var(--gray-900);
+      color: var(--gray-200);
+      padding: 48px 0;
+      margin-top: 80px;
+    }
+
+    footer a { color: white; }
+
+    .breadcrumb {
+      margin-bottom: 24px;
+      color: var(--gray-600);
+    }
+
+    .breadcrumb a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+  </style>
+
+  <%= yield :schema_org %>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="/" class="logo">EntityAPI</a>
+      <nav>
+        <a href="/">States</a>
+        <a href="/api">API Docs</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <%= yield %>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; <%= Date.current.year %> EntityAPI. Business entity data from SAM.gov, FMCSA, and state registries.</p>
+    </div>
+  </footer>
+</body>
+</html>
