@@ -36,7 +36,7 @@ gem "kaminari"
 gem "api-pagination"
 
 # Stripe billing
-gem "stripe", "~> 13.3"
+gem "stripe", "~> 18.1"
 
 # Error tracking
 gem "sentry-ruby"
