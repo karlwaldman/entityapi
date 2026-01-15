@@ -28,7 +28,7 @@ gem "sidekiq", "~> 7.2"
 gem "sidekiq-cron", "~> 1.12"
 
 # HTTP client for scraping
-gem "httparty", "~> 0.24.0"
+gem "httparty", "~> 0.24.2"
 gem "nokogiri", ">= 1.18.9"
 
 # Pagination
